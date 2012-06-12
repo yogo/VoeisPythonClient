@@ -1,0 +1,6 @@
+"TOA5","CR1000_BigSky_Base","CR1000","5152","CR1000.Std.17","CPU:weatherstation_temp_solarrad_wind_5sec.CR1","10205","Table1"
+"TIMESTAMP","RECORD","Batt_Volt","Rain_mm_Tot","AirTC","RH","SlrW","SlrMJ_Tot","WS_ms_Avg","WindDir","WS_ms_Max","Temp_C(1)","Temp_C(2)"
+"TS","RN","Volts","mm","Deg C","%","W/m2","MJ/m2","meters/second","Degrees","meters/second","Deg C","Deg C"
+"","","Smp","Tot","Smp","Smp","Smp","Tot","Avg","Smp","Max","Smp","Smp"
+"2011-09-22 15:15:00",65301,13.15,0,23.80623,14.39905,916.256,1.586035,3.759933,328.3,5.9192,"NAN","NAN"
+"2011-09-22 15:30:00",65302,13.19,0,23.56533,13.57971,798.4649,1.565898,4.011467,313.7,6.0956,"NAN","NAN"

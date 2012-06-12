@@ -1,0 +1,73 @@
+'CR1000
+'Created by Short Cut (2.5)
+
+'Declare Variables and Units
+Public Batt_Volt
+Public Rain_mm
+Public AirTC
+Public RH
+Public SlrW
+Public SlrMJ
+Public WS_ms
+Public WindDir
+Public PTemp_C
+Public Temp_C(2)
+
+Units Batt_Volt=Volts
+Units Rain_mm=mm
+Units AirTC=Deg C
+Units RH=%
+Units SlrW=W/m²
+Units SlrMJ=MJ/m²
+Units WS_ms=meters/second
+Units WindDir=Degrees
+Units PTemp_C=Deg C
+Units Temp_C=Deg C
+
+'Define Data Tables
+DataTable(Table1,True,-1)
+	DataInterval(0,15,Min,10)
+	Sample(1,Batt_Volt,FP2)
+	Totalize(1,Rain_mm,FP2,False)
+	Sample(1,AirTC,IEEE4)
+	Sample(1,RH,IEEE4)
+	Sample(1,SlrW,IEEE4)
+	Totalize(1,SlrMJ,IEEE4,False)
+	Average(1,WS_ms,IEEE4,False)
+	Sample(1,WindDir,FP2)
+	Maximum(1,WS_ms,IEEE4,False,False)
+	Sample(1,Temp_C(1),FP2)
+	Sample(1,Temp_C(2),FP2)
+EndTable
+
+'Main Program
+BeginProg
+	Scan(5,Sec,1,0)
+		'Default Datalogger Battery Voltage measurement Batt_Volt:
+		Battery(Batt_Volt)
+		'TE525MM/TE525M Rain Gauge measurement Rain_mm:
+		PulseCount(Rain_mm,1,1,2,0,0.1,0)
+		'HMP45C (6-wire) Temperature & Relative Humidity Sensor measurements AirTC and RH:
+		VoltSe(AirTC,1,mV2500,1,0,0,_60Hz,0.1,-40.0)
+		VoltSe(RH,1,mV2500,2,0,0,_60Hz,0.1,0)
+		If RH>100 AND RH<108 Then RH=100
+		'CS300 Pyranometer measurements SlrMJ and SlrW:
+		VoltSe(SlrW,1,mV250,3,1,0,_60Hz,1,0)
+		If SlrW<0 Then SlrW=0
+		'Convert mV to W*m-2
+		SlrMJ=SlrW*0.00005
+		'Convert mV to W*m-2
+		SlrW=SlrW*5.0
+		'05103 Wind Speed & Direction Sensor measurements WS_ms and WindDir:
+		PulseCount(WS_ms,1,2,1,1,0.098,0)
+		BrHalf(WindDir,1,mV2500,4,1,1,2500,True,0,_60Hz,355,0)
+		If WindDir>=360 Then WindDir=0
+		If WindDir<0 Then WindDir=0
+		'Datalogger Wiring Panel Temperature measurement PTemp_C:
+		PanelTemp(PTemp_C,_60Hz)
+		'Type T (copper-constantan) Thermocouple measurements Temp_C(1):
+		TCDiff(Temp_C(1),2,mV2_5C,3,TypeT,PTemp_C,True,0,_60Hz,1,0)
+		'Call Data Tables and Store Data
+		CallTable(Table1)
+	NextScan
+EndProg

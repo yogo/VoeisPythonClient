@@ -1,0 +1,91 @@
+'CR1000
+'Created by Short Cut (2.5)
+
+'Declare Variables and Units
+Dim Rs_9
+Public Batt_Volt
+Public AirTemp
+Public DT
+Public H20Dist
+Public Stage
+Public H20Cond
+Public Ct
+Public H20Temp
+
+Units Batt_Volt=Volts
+Units AirTemp=Deg C
+Units H20Cond=mS/cm
+Units Ct=mS/cm
+Units H20Temp=Deg C
+
+'Define Data Tables
+DataTable(SFork,True,-1)
+	DataInterval(0,30,Min,10)
+	Average(1,Batt_Volt,FP2,False)
+	Average(1,AirTemp,FP2,False)
+	Average(1,H20Dist,FP2,False)
+	Average(1,Stage,FP2,False)
+	Average(1,H20Cond,FP2,False)
+	Average(1,Ct,IEEE4,False)
+	Average(1,H20Temp,FP2,False)
+	Sample(1,AirTemp,FP2)
+	FieldNames("AirTemp_SMP")
+	Sample(1,H20Dist,FP2)
+	FieldNames("H20Dist_SMP")
+	Sample(1,Stage,FP2)
+	FieldNames("Stage_SMP")
+	Sample(1,H20Cond,FP2)
+	FieldNames("H20Cond_SMP")
+	Sample(1,Ct,IEEE4)
+	FieldNames("Ct_SMP")
+	Sample(1,H20Temp,FP2)
+	FieldNames("H20Temp_SMP")
+EndTable
+
+'Main Program
+BeginProg
+	Scan(60,Sec,1,0)
+		'Default Datalogger Battery Voltage measurement Batt_Volt:
+		Battery(Batt_Volt)
+		'107 Temperature Probe measurement AirTemp:
+		Therm107(AirTemp,1,1,1,0,_60Hz,1.0,0.0)
+		'SR50 Sonic Ranging Sensor (SDI-12 Output) measurements DT, H20Dist, and Stage:
+		SDI12Recorder(DT,7,"0","M!",1.0,0)
+		H20Dist=DT*SQR((AirTemp+273.15)/273.15)
+		Stage=2.25-H20Dist
+		'CS547A Conductivity and Temperature Probe measurements H20Cond, Ct, and H20Temp:
+		'Make preliminary voltage measurement
+		BrFull(Rs_9,1,mV2500,2,2,1,2500,True,True,0,250,-0.001,1)
+		'Convert voltage measurement to resistance
+		Rs_9=Rs_9/(1-Rs_9)
+		'Make refined voltage measurement based on preliminary measurement
+		Select Case Rs_9
+			Case Is <1.8
+				BrHalf(Rs_9,1,mV2500,4,2,1,2500,True,0,250,1,0)
+			Case Is <9.25
+				BrFull(Rs_9,1,mV2500,2,2,1,2500,True,True,0,250,-0.001,1)
+			Case Is <280
+				BrFull(Rs_9,1,mV250,2,2,1,2500,True,True,0,250,-0.001,1)
+		EndSelect
+		'Convert voltage measurement to resistance
+		Rs_9=Rs_9/(1-Rs_9)
+		'Subtract resistance errors
+		Rs_9=Rs_9-(35*0.000032+0.005)
+		'Calculate EC
+		Ct=(1/Rs_9)*1.382
+		'Correct EC for ionization errors
+		If Ct<0.474 Then
+			Ct=Ct*0.95031-0.00378
+		Else
+			Ct=-0.02889+(0.98614*Ct)+(0.02846*Ct^2)
+		EndIf
+		'Make temperature measurement (Deg C)
+		Therm107(H20Temp,1,2,1,0,250,1,0)
+		'Correct EC for temperature errors
+		H20Cond=(Ct*100)/((H20Temp-25)*2.5+100)
+		'Trap measurements below 0.005 mS/cm threshold
+		If H20Cond<0.005 Then H20Cond=0.005
+		'Call Data Tables and Store Data
+		CallTable(SFork)
+	NextScan
+EndProg

@@ -1,0 +1,52 @@
+10/21/2009
+10:28:16
+Created by Short Cut (2.5)
+Short Cut Program:  NorthFork.DEF
+
+-Wiring for CR1000-
+
+  107 Temperature Probe
+    1H:  Red
+    Ground:  Purple
+    EX1:  Black
+    G:  Clear
+
+  SR50 Sonic Ranging Sensor (SDI-12 Output)
+    G:  Clear
+    G:  White
+    G:  Black
+    12V:  Red
+    C7:  Green
+
+  CS547A Conductivity and Temperature Probe
+    1L:  DATALOGGER SE TEMP (A547)
+    Ground:  DATALOGGER AG (A547)
+    2H:  DATALOGGER HI COND (A547)
+    2L:  DATALOGGER LOW COND (A547)
+    EX1:  DATALOGGER EX TEMP (A547)
+    EX2:  DATALOGGER EX COND (A547)
+    G:  DATALOGGER SHIELD (A547)
+
+           (A547) SENSOR SHIELD:  Clear
+           (A547) SENSOR EXCOND:  Black
+           (A547) SENSOR EXTEMP:  Green
+           (A547) SENSOR COND:  Orange
+           (A547) SENSOR TEMP:  Red
+
+-Measurement Labels-
+
+  Default Measurements
+    Batt_Volt
+
+  107 Temperature Probe
+    AirTemp
+
+  SR50 Sonic Ranging Sensor (SDI-12 Output)
+    DT
+    H20Dist
+    Stage
+
+  CS547A Conductivity and Temperature Probe
+    H20Cond
+    Ct
+    H20Temp

@@ -1,0 +1,33 @@
+Last Push to VOEIS: 2012-06-11 13:50
+-----------------
+
+CR1000_BigSky_NFork.dat
+# New Data Rows= 8411
+Creating Upload File
+File to Upload to VOEIS=C:\Campbellsci\StreamingData\BigSky_Streamflow\NFork\Upload_File.csv
+URL=https://voeis.msu.montana.edu/projects/b6db01d0-e606-11df-863f-6e9ffb75bc80/apivs/upload_data.json?
+{'Content-Length': '1264532', 'Content-Type': 'multipart/form-data; boundary=fb1dbd98fdf54d7fa89ef6e781f4cbca'}
+CR1000_BigSky_SFork.dat
+# New Data Rows= 8411
+Creating Upload File
+File to Upload to VOEIS=C:\Campbellsci\StreamingData\BigSky_Streamflow\SFork\Upload_File.csv
+URL=https://voeis.msu.montana.edu/projects/b6db01d0-e606-11df-863f-6e9ffb75bc80/apivs/upload_data.json?
+{'Content-Length': '1224224', 'Content-Type': 'multipart/form-data; boundary=76745ec7cc5a4234bb17ae1c65fb63f8'}
+CR1000_BigSky_WFork.dat
+# New Data Rows= 8411
+Creating Upload File
+File to Upload to VOEIS=C:\Campbellsci\StreamingData\BigSky_Streamflow\WFork\Upload_File.csv
+URL=https://voeis.msu.montana.edu/projects/b6db01d0-e606-11df-863f-6e9ffb75bc80/apivs/upload_data.json?
+{'Content-Length': '1254454', 'Content-Type': 'multipart/form-data; boundary=88cef8ad84eb450d9526f2e88080448e'}
+CR1000_BigSky_UPWFork.dat
+# New Data Rows= 8411
+Creating Upload File
+File to Upload to VOEIS=C:\Campbellsci\StreamingData\BigSky_Streamflow\UPWFork\Upload_File.csv
+URL=https://voeis.msu.montana.edu/projects/b6db01d0-e606-11df-863f-6e9ffb75bc80/apivs/upload_data.json?
+{'Content-Length': '1066023', 'Content-Type': 'multipart/form-data; boundary=f6a5bc5878154319a29bd7806fcd6f8b'}
+CR1000_BigSky_Base.dat
+# New Data Rows= 16822
+Creating Upload File
+File to Upload to VOEIS=C:\Campbellsci\StreamingData\BigSky_Streamflow\BaseStation\Upload_File.csv
+URL=https://voeis.msu.montana.edu/projects/b6db01d0-e606-11df-863f-6e9ffb75bc80/apivs/upload_data.json?
+{'Content-Length': '1607179', 'Content-Type': 'multipart/form-data; boundary=03be320676474669ac97de52c28b872a'}
