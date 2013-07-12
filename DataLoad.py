@@ -2,9 +2,26 @@
 """
 DateTime conversion script for CR10X loggers that store year, day, hr_min data in three separate columns. Script moves all datetime info to a single column.
 Created on Wed Aug 31 15:26:03 2011
+Updated on Fri July 12 2013
 
-@author: - Seth Mason
+@author: Seth Kurt-Mason
+@author: Thomas Heetderks
 """
+
+### INPUT FILES PATH
+file_path = './files/'
+
+### HOST URL
+voeis_host = 'https://voeis.msu.montana.edu'
+#voeis_host = 'https://voeis-dev.msu.montana.edu'
+#voeis_host = 'http://localhost:3000'
+
+
+updater_file_name = 'Updater.csv'
+upload_file_name = 'Upload_File.csv'
+updater_file = file_path+updater_file_name
+upload_file = file_path+upload_file_name
+
 
 def timestamp_update(RawCR10X, TimeModified):
     import csv, datetime
@@ -33,7 +50,7 @@ def timestamp_update(RawCR10X, TimeModified):
 def CheckNewData(LoggerFile):    
     import filecmp
     
-    if filecmp.cmp(LoggerFile, 'Updater.csv') == False:    
+    if filecmp.cmp(LoggerFile, updater_file) == False:    
         return "OK to Upload"
 
 ####################
@@ -41,10 +58,10 @@ def CheckNewData(LoggerFile):
 def Make_updater(LoggerFile, startline):
     import os, csv
     
-    if os.path.isfile(os.getcwd()+'\Updater.csv') == False:
+    if os.path.isfile(updater_file) == False:
         a = open(LoggerFile, 'rb')
         logger = csv.reader(a)
-        b = open('Updater.csv', 'wb')
+        b = open(updater_file, 'wb')
         update = csv.writer(b, delimiter=',',quoting=csv.QUOTE_NONE)
         
         data = list(logger)
@@ -59,9 +76,8 @@ def Make_updater(LoggerFile, startline):
 
 def API_LoadLoggerData(LoggerFile, site_id, api, project, template_id):
     
-    from encode import multipart_encode, MultipartParam
-    from streaminghttp import register_openers
-    import urllib2, os, csv
+    import requests
+    import os, csv
     
     class Test:
        def __init__(self):
@@ -73,10 +89,10 @@ def API_LoadLoggerData(LoggerFile, site_id, api, project, template_id):
     print LoggerFile       
     a = open(LoggerFile, 'rb')
     logger = csv.reader(a)
-    UpdateFile = 'Updater.csv'
-    b = open(UpdateFile, 'rb')
+    b = open(updater_file, 'rb')
     update = csv.reader(b)
-    c = open('Upload_File.csv','wb')
+    c = open(upload_file,'wb')
+
     upload_data = csv.writer(c, delimiter=',',quoting=csv.QUOTE_NONE)
 
     data = list(logger)
@@ -94,37 +110,18 @@ def API_LoadLoggerData(LoggerFile, site_id, api, project, template_id):
         b.close()
         c.close()
 
-        upload_file = os.getcwd()+'\Upload_File.csv'
         print "File to Upload to VOEIS="+upload_file
 
-        url='https://voeis.msu.montana.edu/projects/%s/apivs/upload_data.json?api_key=%s' % (project,api)
+        url = voeis_host+'/projects/%s/apivs/upload_data.json?api_key=%s'%(project,api)
         #url = 'https://posttestserver.com/post.php'
         print 'URL='+url
         
-        file_param = MultipartParam.from_file('datafile','Upload_File.csv')
-        #params = [{'datafile': open('Upload_File.csv', 'rb'),
-        #params = [{'datafile': file_param,
-        params = {'datafile': open('Upload_File.csv', 'rb'),
-                   'data_template_id': template_id,
+        params = {'data_template_id': template_id,
                    'site_id': site_id,
                    'start_line': startline,
                    'api_key': api
                    }
-        # Register the streaming http handlers with urllib2
-        register_openers()
-        print 'OPENERS REGISTERED!'
+        files = {'datafile': open(upload_file, 'rb')}
 
-        # headers contains the necessary Content-Type and Content-Length
-        # datagen is a generator object that yields the encoded parameters
-        datagen, headers = multipart_encode(params)
-        print 'TESTING'
-        print headers
-        #print repr(datagen)
-        #return datagen
-        # Create the Request object
-        request = urllib2.Request(url, datagen, headers)
-        #request.get_method = lambda: 'POST'
-        # Actually do the request, and get the response
-        result = urllib2.urlopen(request).read()
-        print result
-        return result
+        # POST request
+        return requests.post(url, data=params, files=files)
