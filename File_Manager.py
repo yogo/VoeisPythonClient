@@ -51,7 +51,7 @@ print ''
 #LoggerFile = './files/HBS_Roof_WXT520.csv'
 #LoggerFile = './files/testing201307.csv'
 LoggerFile = './files/voeis_test.csv'
-result = ''
+response = ''
 
 try:
     api =  'f0f30a157c6fd2fbbcf7a1909db154ae188a35687e21ea0e8b4ada7908a3ee53' # HBS, KY

@@ -124,4 +124,6 @@ def API_LoadLoggerData(LoggerFile, site_id, api, project, template_id):
         files = {'datafile': open(upload_file, 'rb')}
 
         # POST request
-        return requests.post(url, data=params, files=files)
+        # added verify=False to skip SSL validation--
+        # solves validation issue on some platforms.
+        return requests.post(url, data=params, files=files, verify=False)
